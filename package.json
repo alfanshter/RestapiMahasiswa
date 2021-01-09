@@ -1,0 +1,24 @@
+{
+  "name": "program",
+  "version": "1.0.0",
+  "description": "rest api mahasiswa",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfanshter/RestapiMahasiswa.git"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "nodejs"
+  ],
+  "author": "alfanshter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alfanshter/RestapiMahasiswa/issues"
+  },
+  "homepage": "https://github.com/alfanshter/RestapiMahasiswa#readme"
+}
