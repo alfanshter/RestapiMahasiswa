@@ -19,21 +19,21 @@ exports.register = function(req,res){
     var query = "SELECT email FROM ?? WHERE ??";
     var table = ["user","email", post.email];
 
-    query = mysql.format(query.table);
+    query = mysql.format(query, table);
 
     connection.query(query, function(error,rows){
         if(error){
-            console.log(error);
+            console.log("error");
         }else{
-            if(rows.lenght == 0){
+            if(rows.length == 0){
                 var query = "INSERT INTO ?? SET ?";
                 var table = ["user"];
-                query = mysql.format(query,table);
-                connection.query(query,post,function(error,rows){
+                query = mysql.format(query, table);
+                connection.query(query, post, function(error,rows){
                     if(error){
                         console.log(error);
                     }else{
-                        response.ok("Berhasil menambahkan data");
+                        response.ok("Berhasil menambahkan data", res);
                     }
                 });
             }else{
