@@ -8,24 +8,38 @@ var ip = require('ip');
 
 //controller untuk register
 exports.register = function(req,res){
-    var post = {
-        username : req.body.username,
-        email : req.body.email,
-        password : md5(req.body.password),
-        role : req.body.role,
-        tanggal_daftar : new Date()
+    
+
+    var email = {
+        email : req.body.email
     }
 
     var query = "SELECT email FROM ?? WHERE ??=?";
-    var table = ["user","email", post.email];
+    var table = ["user","email", email.email];
 
     query = mysql.format(query, table);
 
     connection.query(query, function(error,rows){
+        var token = jwt.sign({rows}, config.secret,{
+            // expiresIn: 1440
+        });
+
+        var post = {
+            username : req.body.username,
+            email : email.email,
+            password : md5(req.body.password),
+            role : req.body.role,
+            tanggal_daftar : new Date(),
+            akses_token : token
+        }
+    
+    
+        
         if(error){
             console.log("error");
         }else{
             if(rows.length == 0){
+                
                 var query = "INSERT INTO ?? SET ?";
                 var table = ["user"];
                 query = mysql.format(query, table);
@@ -33,7 +47,11 @@ exports.register = function(req,res){
                     if(error){
                         console.log(error);
                     }else{
-                        response.ok("Berhasil menambahkan data", res);
+                        res.json({
+                            success : true,
+                            message : 'Token JWT Tergenerate',
+                            token   : token
+                        });
                     }
                 });
             }else{
@@ -63,7 +81,7 @@ exports.login = function(req,res){
         }else{
             if(rows.length == 1){
                 var token = jwt.sign({rows}, config.secret,{
-                    expiresIn: 1440
+                    // expiresIn: 1440
                 });
                 id_user = rows[0].id;
 
