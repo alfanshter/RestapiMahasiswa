@@ -5,6 +5,7 @@ var response = require('../res');
 var jwt = require('jsonwebtoken');
 var config = require('../config/secret');
 var ip = require('ip');
+const { connect } = require('.');
 
 //controller untuk register
 exports.register = function(req,res){
@@ -118,3 +119,32 @@ exports.login = function(req,res){
 exports.halamanrahasia = function(req,res){
     response.ok("Halaman ini hanya untuk user dengan roles = 2",res);
 }
+
+exports.read_mahasiswa_key = function(req,res){
+    connection.query('SELECT * FROM mahasiswa',function(err,rows,fields){
+        if(err){
+            console.log(err);
+        }else{
+            response.ok(rows,res);
+        }
+    });
+}
+
+exports.post_mahasiswa_key = function(req,res){
+    var  nim = req.body.nim;
+    var  nama = req.body.nama;
+    var  jurusan = req.body.jurusan;
+
+    connection.query('INSERT INTO mahasiswa (nim,nama,jurusan) VALUES(?,?,?)', 
+        [nim,nama,jurusan],
+        function(error,rows,fields){
+            if(error){
+                console.log(error);
+            }else{
+                response.ok("Berhasil Insert data",res)
+            }
+        }
+    )
+}
+
+
