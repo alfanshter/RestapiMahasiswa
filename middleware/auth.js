@@ -6,10 +6,13 @@ var jwt = require('jsonwebtoken');
 var config = require('../config/secret');
 var ip = require('ip');
 const { connect } = require('.');
-
+const mongoose = require('mongoose');
 //controller untuk register
 exports.register = function(req,res){
-    
+
+var newId = new mongoose.mongo.ObjectId('56cb91bdc3464f14678934ca');
+// or leave the id string blank to generate an id with a new hex identifier
+var newId2 = new mongoose.mongo.ObjectId();
 
     var email = {
         email : req.body.email
@@ -26,6 +29,7 @@ exports.register = function(req,res){
         });
 
         var post = {
+            uid : newId2,
             username : req.body.username,
             email : email.email,
             password : md5(req.body.password),
@@ -51,12 +55,17 @@ exports.register = function(req,res){
                         res.json({
                             success : true,
                             message : 'Token JWT Tergenerate',
-                            token   : token
+                            token   : token,
+                            status : "2"
                         });
                     }
                 });
             }else{
-                response.ok("Email sudah terdaftar",res);
+                 res.json({
+                     success : false,
+                     message : 'Email sudah terdaftar',
+                     status : "1"
+                 });
             }
         }
     })
@@ -81,14 +90,13 @@ exports.login = function(req,res){
             console.log(error);
         }else{
             if(rows.length == 1){
-                var token = jwt.sign({rows}, config.secret,{
-                    // expiresIn: 1440
-                });
-                id_user = rows[0].id;
+                uid = rows[0].uid;
+                akses_token = rows[0].akses_token;
+
 
                 var data = {
-                    id_user : id_user ,
-                    akses_token : token,
+                    id_user : uid ,
+                    akses_token : akses_token,
                     ip_address : ip.address()
                 }
 
@@ -104,8 +112,9 @@ exports.login = function(req,res){
                          res.json({
                              success : true,
                              message : 'Token JWT Tergenerate',
-                             token   : token,
-                             currUser: data.id_user
+                             token   : akses_token,
+                             currUser: data.id_user,
+                             status : "1"
                          });
                     }
                 });
