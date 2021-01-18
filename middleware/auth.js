@@ -140,20 +140,67 @@ exports.read_mahasiswa_key = function(req,res){
 }
 
 exports.post_mahasiswa_key = function(req,res){
-    var  nim = req.body.nim;
-    var  nama = req.body.nama;
-    var  jurusan = req.body.jurusan;
-
-    connection.query('INSERT INTO mahasiswa (nim,nama,jurusan) VALUES(?,?,?)', 
-        [nim,nama,jurusan],
-        function(error,rows,fields){
-            if(error){
-                console.log(error);
-            }else{
-                response.ok("Berhasil Insert data",res)
-            }
+    
+        var nim = {
+            nim : req.body.nim
         }
-    )
+    
+        var query = "SELECT nim FROM ?? WHERE ??=?";
+        var table = ["mahasiswa","nim", nim.nim];
+    
+        query = mysql.format(query, table);
+    
+        connection.query(query, function(error,rows){
+            // var token = jwt.sign({rows}, config.secret,{
+            //     // expiresIn: 1440
+            // });
+    
+            var post = {
+                nim : nim.nim,
+                nama : req.body.nama,
+                jurusan : req.body.jurusan
+            }
+        
+        
+            if(error){
+                console.log("kok isok error");
+            }else{
+                if(rows.length == 0){
+                    
+                    var query = "INSERT INTO ?? SET ?";
+                    var table = ["mahasiswa"];
+                    query = mysql.format(query, table);
+                    connection.query(query, post, function(error,rows){
+                        if(error){
+                            console.log(error);
+                        }else{
+                            res.json({
+                                success : true,
+                                message : 'insert data berhasil',
+                                status : "2"
+                            });
+                        }
+                    });
+                }else{
+                     res.json({
+                         success : false,
+                         message : 'nim sudah terdaftar',
+                         status : "1"
+                     });
+                }
+            }
+        })
+    
+    // connection.query('INSERT INTO mahasiswa (nim,nama,jurusan) VALUES(?,?,?)', 
+    //     [nim,nama,jurusan],
+    //     function(error,rows,fields){
+    //         if(error){
+    //             console.log(error);
+    //         }else{
+    //             response.ok("Berhasil Insert data",res)
+    //         }
+    //     }
+    // )
 }
 
 

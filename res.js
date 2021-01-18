@@ -2,7 +2,7 @@
 
 exports.ok = function(values , res){
     var data = {
-        'status' : 200,
+        'status' : "2",
         'values' : values
     };
 
@@ -34,7 +34,7 @@ exports.oknested = function(values, res){
     },{});
 
     var data = {
-        'status' : 200,
+        'status' : "2",
         'values' :hasil
     };
 
